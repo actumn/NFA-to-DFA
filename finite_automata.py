@@ -46,7 +46,7 @@ def extract_destination(nfa_transition_dict, dfa_state, symbol):
 
 def destinations_to_final(destinations):
     if not destinations:
-        return [None]
+        return None
 
     final = []
     for destination in destinations:
@@ -86,6 +86,8 @@ class DFA:
                 else:
                     destinations = extract_destination(nfa_transition_dict, dfa_state, symbol)
                     final_destination = destinations_to_final(destinations)
+                    if final_destination is None:
+                        continue
 
                 dfa_transition_dict[(dfa_state, symbol)] = final_destination
 
