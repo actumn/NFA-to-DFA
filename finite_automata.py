@@ -1,53 +1,24 @@
+def final_states(line):
+    accepting_states_line = list(map(int, line.split(' ')))
+    return accepting_states_line[0], accepting_states_line[1:]
+
 class NFA:
-    def __init__(self):
-        self.num_states = 0
-        self.states = []
-        self.symbols = []
-        self.num_accepting_states = 0
-        self.accepting_states = []
-        self.start_state = 0
-        self.transition_functions = []
-
-
-    def init_states(self):
-        self.states = list(range(self.num_states))
-
-
-    def print_nfa(self):
-        print(self.num_states)
-        print(self.states)
-        print(self.symbols)
-        print(self.num_accepting_states)
-        print(self.accepting_states)
-        print(self.start_state)
-        print(self.transition_functions)
-
-
-    def construct_nfa_from_file(self, lines):
+    def __init__(self, lines):
         self.num_states = int(lines[0])
-        self.init_states()
+        self.states = list(range(self.num_states))
         self.symbols = list(lines[1].strip())
+        self.num_accepting_states, self.accepting_states = final_states(lines[2])
+        self.start_state = int(lines[3])
 
-        accepting_states_line = lines[2].split(" ")
-        for index in range(len(accepting_states_line)):
-            if index == 0:
-                self.num_accepting_states = int(accepting_states_line[index])
-            else:
-                self.accepting_states.append(int(accepting_states_line[index]))
-        
-        self.startState = int(lines[3])
-        
-        
-        for index in range(4, len(lines)):
-            transition_func_line = lines[index].split(" ")
+        self.transition_functions = []
+        for line in lines[4:]:
+            transition_func_line = line.split(' ')
             
             starting_state = int(transition_func_line[0])
             transition_symbol = transition_func_line[1]
             ending_state = int(transition_func_line[2])
             
-            transition_function = (starting_state, transition_symbol, ending_state);
-            self.transition_functions.append(transition_function)        
-
+            self.transition_functions.append((starting_state, transition_symbol, ending_state))
 
 
 class DFA:
@@ -121,11 +92,11 @@ class DFA:
                     self.num_accepting_states += 1
 
 
-    def print_dfa(self):
+    def print(self):
         print(len(self.q))
-        print("".join(self.symbols))
-        print(str(self.num_accepting_states) + " " + " ".join(str(accepting_state) for accepting_state in self.accepting_states))
+        print(''.join(self.symbols))
+        print(str(self.num_accepting_states) + ' ' + ' '.join(str(accepting_state) for accepting_state in self.accepting_states))
         print(self.start_state)
         
         for transition in sorted(self.transition_functions):
-            print(" ".join(str(value) for value in transition))
+            print(' '.join(str(value) for value in transition))
