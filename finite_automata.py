@@ -33,6 +33,20 @@ class NFA:
         return result
 
 
+def lambda_closure(nfa_transition_dict, dfa_state):
+    result = list(dfa_state)
+
+    for nfa_state in result:
+        if (nfa_state, '@') in nfa_transition_dict:
+            value_list = nfa_transition_dict[(nfa_state, '@')]
+
+            for value in value_list:
+                if value not in result:
+                    result.append(value)
+
+    return tuple(result)
+
+
 def extract_destination(nfa_transition_dict, dfa_state, symbol):
     destinations = []
 
@@ -68,26 +82,24 @@ class DFA:
 
     def convert_from_nfa(self, nfa):
         self.symbols = nfa.symbols
-        self.start_state = nfa.start_state
-        # Initial state q0 = (0,)
-        self.q.append((self.start_state,))
 
         # Combine NFA transitions
         nfa_transition_dict = nfa.transition_dict
+
+        # Initial state q0 = lambda_closure((0,))
+        self.start_state = 0
+        self.q.append(lambda_closure(nfa_transition_dict, (nfa.start_state, )))
 
         # Convert NFA transitions to DFA transitions
         dfa_transition_dict = {}
         for dfa_state in self.q:
             for symbol in nfa.symbols:
-                # dfa_state count is 1 (ex. (0, ), (1, ))
-                if len(dfa_state) == 1 and (dfa_state[0], symbol) in nfa_transition_dict:
-                    final_destination = nfa_transition_dict[(dfa_state[0], symbol)]
-                # Convert other nfa transitions (ex. (0, 1, 2) (2, 3))
-                else:
-                    destinations = extract_destination(nfa_transition_dict, dfa_state, symbol)
-                    final_destination = destinations_to_final(destinations)
-                    if final_destination is None:
-                        continue
+                destinations = extract_destination(nfa_transition_dict, dfa_state, symbol)
+                final_destination = destinations_to_final(destinations)
+                if final_destination is None:
+                    continue
+
+                final_destination = lambda_closure(nfa_transition_dict, final_destination)
 
                 dfa_transition_dict[(dfa_state, symbol)] = final_destination
 
@@ -96,7 +108,7 @@ class DFA:
 
         # Convert NFA states to DFA states
         for key, value in dfa_transition_dict.items():
-            self.transition_functions.append((self.q.index(tuple(key[0])), key[1], self.q.index(tuple(value))))
+            self.transition_functions.append((self.q.index(key[0]), key[1], self.q.index(value)))
 
         for q_state in self.q:
             for nfa_final_state in nfa.final_states:
