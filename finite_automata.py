@@ -37,6 +37,19 @@ class NFA:
         return result
 
 
+def destinations_to_final(destinations):
+    if not destinations:
+        return [None]
+
+    final = []
+    for destination in destinations:
+        for value in destination:
+            if value not in final:
+                final.append(value)
+
+    return final
+
+
 class DFA:
     def __init__(self):
         self.num_states = 0
@@ -50,39 +63,33 @@ class DFA:
     def convert_from_nfa(self, nfa):
         self.symbols = nfa.symbols
         self.start_state = nfa.start_state
+        # Initial state q0 = (0,)
+        self.q.append((self.start_state,))
 
         # Combine NFA transitions
         nfa_transition_dict = nfa.transition_dict
-
-        # Initial state q0
-        self.q.append((self.start_state,))
 
         # Convert NFA transitions to DFA transitions
         dfa_transition_dict = {}
         for dfa_state in self.q:
             for symbol in nfa.symbols:
+                # Initial transition
                 if len(dfa_state) == 1 and (dfa_state[0], symbol) in nfa_transition_dict:
                     dfa_transition_dict[(dfa_state, symbol)] = nfa_transition_dict[(dfa_state[0], symbol)]
 
                     if tuple(dfa_transition_dict[(dfa_state, symbol)]) not in self.q:
                         self.q.append(tuple(dfa_transition_dict[(dfa_state, symbol)]))
+
+                # Convert other nfa transitions
                 else:
                     destinations = []
-                    final_destination = []
 
                     for nfa_state in dfa_state:
                         if (nfa_state, symbol) in nfa_transition_dict and \
                                 nfa_transition_dict[(nfa_state, symbol)] not in destinations:
                             destinations.append(nfa_transition_dict[(nfa_state, symbol)])
 
-                    if not destinations:
-                        final_destination.append(None)
-                    else:
-                        for destination in destinations:
-                            for value in destination:
-                                if value not in final_destination:
-                                    final_destination.append(value)
-
+                    final_destination = destinations_to_final(destinations)
                     dfa_transition_dict[(dfa_state, symbol)] = final_destination
 
                     if tuple(final_destination) not in self.q:
