@@ -8,7 +8,7 @@ This application gets NFA data from a `txt` file. File structure can be found [b
 
 ## NFA File Structure
 
-Examples can be found under tests folder. A good example to explain our structure is [test4.txt](../blob/master/test/test4.txt).
+Examples can be found under tests folder. A good example to explain our structure is [test4.txt](./blob/master/test/test4.txt).
 
 Program takes this input...
 
