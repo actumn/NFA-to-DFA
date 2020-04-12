@@ -14,11 +14,11 @@ class Demo1:
         self.button1 = tk.Button(
             self.frame, text='Convert', width=25, command=self.conversion)
         self.button1.pack()
+        # DOES NOT WORK?
+        # self.button2 = tk.Button(
+        #     self.frame, text='Save', width=25, command=self.conversion)
+        # self.button2.pack()
         self.frame.pack()
-
-    def new_window(self):
-        self.newWindow = tk.Toplevel(self.master)
-        self.app = Demo2(self.newWindow)
 
     def ask_directory_for_conversion(self):
         self.file_path = fd.askopenfilename()
@@ -32,19 +32,14 @@ class Demo1:
         self.dfa.convert_from_nfa(self.nfa)
         self.dfa.print()
 
-
-class Demo2:
-    def __init__(self, master):
-        self.master = master
-        self.frame = tk.Frame(self.master)
-        self.quitButton = tk.Button(
-            self.frame, text='Back', width=25, command=self.close_windows)
-        self.quitButton.pack()
-        self.frame.pack()
-
-    def close_windows(self):
-        self.master.destroy()
-
+    # DOES NOT WORK?
+    # def save_button(self):
+    #     file = open(f"{self.file_path}", 'w')
+    #     file.write(len(self.dfa.q))
+    #     file.write(''.join(self.dfa.symbols))
+    #     file.write(str(self.dfa.num_final_states) + ' ' + ' '.join(str(final_state) for final_state in self.dfa.final_states))
+    #     file.write(self.dfa.start_state)
+    #     file.close()
 
 def main():
     root = tk.Tk()
