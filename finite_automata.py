@@ -115,7 +115,8 @@ class DFA:
                 if nfa_final_state in q_state:
                     self.final_states.append(self.q.index(q_state))
                     self.num_final_states += 1
-        
+
+    # Print output to console    
     def print(self):
         print(len(self.q))
         print(''.join(self.symbols))

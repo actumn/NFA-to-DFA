@@ -47,27 +47,6 @@ Next N lines with the "Number Symbol Number" syntax describe the routes. 0 a 1 m
 
 We have one special symbol, "@", and it is used for Lambda. Really simplified, Lambda is what you use when you want to reach to a certain state without using a symbol.
 
-## Wanting To Improve? Check These Out
+## Saving Files
 
-### Saving Functions
-
-For one less function and more compact code, I know that print can be used like;
-
-finite_automata.py
-
-```python
-def output(self, filex=sys.stdout):
-    print(len(self.q), file=filex)
-    print(''.join(self.symbols), file=filex)
-    print(str(self.num_final_states) + ' ' + ' '.join(str(final_state) for in self.final_states), file=filex)
-    print(self.start_state, file=filex)
-```
-
-app.py
-
-```python
-def save_button(self):
-    self.dfa.save_button(file = open(f"{self.file_path}_DFA", 'w'))
-```
-
-but couldn't simplify it to my taste. Above code does not work, I broke it at some point.
+Files are saved at the selected file's location. You don't need to convert first. Selecting a file and hitting the save button will save the output under "filename_output.txt" and it is the same output you see on console.
