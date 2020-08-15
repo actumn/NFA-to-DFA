@@ -116,6 +116,7 @@ class DFA:
                     self.final_states.append(self.q.index(q_state))
                     self.num_final_states += 1
 
+    # Print output to console    
     def print(self):
         print(len(self.q))
         print(''.join(self.symbols))
